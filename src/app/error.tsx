@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import Link from 'next/link';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -33,21 +33,14 @@ export default function Error({ error, reset }: ErrorProps) {
         </p>
 
         <div className="flex flex-col justify-center gap-4 sm:flex-row">
-          <button
-            onClick={reset}
-            className="flex items-center justify-center gap-2 rounded-lg bg-amber-500 px-6 py-3 font-semibold text-black transition hover:bg-amber-400"
-          >
+          <Button variant="accent" size="sm" onClick={reset} className="gap-2">
             <RefreshCw size={18} />
             Try Again
-          </button>
-
-          <Link
-            href="/"
-            className="flex items-center justify-center gap-2 rounded-lg border border-card-border px-6 py-3 text-foreground transition hover:border-amber-500 hover:text-amber-500"
-          >
+          </Button>
+          <Button href="/" variant="ghost" size="sm" className="gap-2">
             <Home size={18} />
             Back Home
-          </Link>
+          </Button>
         </div>
 
         {process.env.NODE_ENV === 'development' && (

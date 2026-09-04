@@ -1,13 +1,16 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { currentUser } from '@clerk/nextjs/server';
-import DashboardContent from '@/components/DashboardContent';
+import AppPage from '@/components/templates/AppPage';
+import DashboardContent from '@/components/user/DashboardContent';
 import { getDbUser } from '@/lib/actions/user';
 import {
   computeDashboardData,
   toFavItems,
   toRecentlyViewedItems,
 } from '@/lib/dashboard';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Dashboard',
@@ -16,9 +19,7 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   const user = await currentUser();
-  if (!user) {
-    redirect('/sign-in');
-  }
+  if (!user) redirect('/sign-in');
 
   const dbUser = await getDbUser(user);
   const data = computeDashboardData(
@@ -27,9 +28,8 @@ export default async function DashboardPage() {
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="mb-8 text-3xl font-bold text-foreground">Dashboard</h1>
+    <AppPage title="Dashboard">
       <DashboardContent {...data} />
-    </div>
+    </AppPage>
   );
 }

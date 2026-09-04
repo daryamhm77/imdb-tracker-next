@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import MovieDetail from '@/components/MovieDetail';
+import MovieDetail from '@/components/movie/MovieDetail';
+import StatusPage from '@/components/templates/StatusPage';
 import { getMovieById } from '@/lib/api';
+import { CURATED_MOVIE_IDS } from '@/lib/constants/movies';
 
-// Movie metadata is effectively immutable: cache each visited page (ISR)
-// and refresh hourly. User-specific bits (AddToFav, RecordView) are client
-// components that fetch after hydration, so they stay per-user.
 export const revalidate = 3600;
+
+export function generateStaticParams() {
+  return CURATED_MOVIE_IDS.map((id) => ({ id }));
+}
 
 interface MovieDetailPageProps {
   params: Promise<{
@@ -41,19 +43,10 @@ export default async function MovieDetailPage({
 
   if (!movie) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="text-center">
-          <h1 className="mb-4 text-2xl font-bold text-red-400">
-            Movie not found
-          </h1>
-          <Link
-            href="/"
-            className="rounded-lg bg-amber-500 px-6 py-2 font-semibold text-black transition hover:bg-amber-400"
-          >
-            Back Home
-          </Link>
-        </div>
-      </div>
+      <StatusPage
+        title="Movie not found"
+        description="We couldn't find that title. Try another search."
+      />
     );
   }
 

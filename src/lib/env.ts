@@ -6,14 +6,18 @@ function requireEnv(name: string): string {
   return value;
 }
 
-export const OMDB_API_KEY = requireEnv('OMDB_API_KEY');
-
-let _MONGODB_URI: string | null = null;
-export function getMongoUri(): string {
-  if (!_MONGODB_URI) {
-    _MONGODB_URI = requireEnv('MONGODB_URI');
+let omdbApiKey: string | null = null;
+export function getOmdbApiKey(): string {
+  if (!omdbApiKey) {
+    omdbApiKey = requireEnv('OMDB_API_KEY');
   }
-  return _MONGODB_URI;
+  return omdbApiKey;
 }
 
-export const API_KEY = process.env.API_KEY || '';
+let mongoUri: string | null = null;
+export function getMongoUri(): string {
+  if (!mongoUri) {
+    mongoUri = requireEnv('MONGODB_URI');
+  }
+  return mongoUri;
+}

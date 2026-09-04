@@ -6,6 +6,13 @@ export interface Movie {
   Poster: string;
 }
 
+export const FAV_LISTS = ['favorite', 'watchlist', 'watched'] as const;
+export type FavList = (typeof FAV_LISTS)[number];
+
+export function isFavList(value: unknown): value is FavList {
+  return typeof value === 'string' && (FAV_LISTS as readonly string[]).includes(value);
+}
+
 export interface UserFavItem {
   movieId: string;
   title: string;
@@ -13,7 +20,7 @@ export interface UserFavItem {
   description: string;
   dateReleased: string;
   rating: string;
-  list: string;
+  list: FavList;
 }
 
 export interface RecentlyViewedItem {
@@ -42,4 +49,24 @@ export interface MovieDetail extends Movie {
   DVD: string;
   BoxOffice: string;
   Production: string;
+}
+
+export function toMovie(movie: Pick<MovieDetail, keyof Movie>): Movie {
+  return {
+    imdbID: movie.imdbID,
+    Title: movie.Title,
+    Year: movie.Year,
+    Type: movie.Type,
+    Poster: movie.Poster && movie.Poster !== 'N/A' ? movie.Poster : '',
+  };
+}
+
+export function favItemToMovie(fav: UserFavItem): Movie {
+  return {
+    imdbID: fav.movieId,
+    Title: fav.title,
+    Year: fav.dateReleased,
+    Type: 'movie',
+    Poster: fav.image || '',
+  };
 }

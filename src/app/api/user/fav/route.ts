@@ -1,95 +1,71 @@
-import { NextRequest, NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
-import User from "@/lib/models/user.model";
-import { getDbUser } from "@/lib/actions/user";
+import { NextRequest, NextResponse } from 'next/server';
+import { getDbUser } from '@/lib/actions/user';
+import { requireApiUser } from '@/lib/auth';
+import { toFavItems } from '@/lib/dashboard';
+import {
+  filterFavsByList,
+  hasFavEntry,
+  movieLists,
+  parseFavList,
+  toggleFav,
+} from '@/lib/services/user-lists';
+import { isFavList } from '@/lib/types';
 
 export async function PUT(req: NextRequest) {
-  const user = await currentUser();
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const { user, error } = await requireApiUser();
+  if (!user) return error;
 
   try {
     const dbUser = await getDbUser(user);
     const data = await req.json();
-    const list = data.list || "favorite";
+    const list = parseFavList(data.list);
 
-    // Each (movieId, list) pair is independent: toggling one list
-    // never affects the movie's membership in the other lists.
-    const existing = dbUser.favs?.find(
-      (fav: { movieId: string; list: string }) =>
-        fav.movieId === data.movieId && fav.list === list
+    if (!data.movieId || !data.title) {
+      return NextResponse.json({ error: 'movieId and title are required' }, { status: 400 });
+    }
+
+    const updatedUser = await toggleFav(
+      dbUser._id.toString(),
+      {
+        movieId: data.movieId,
+        title: data.title,
+        description: data.description,
+        dateReleased: data.dateReleased,
+        rating: data.rating,
+        image: data.image,
+        list,
+      },
+      hasFavEntry(toFavItems(dbUser.favs), data.movieId, list)
     );
-
-    const updatedUser = existing
-      ? await User.findByIdAndUpdate(
-          dbUser._id,
-          { $pull: { favs: { movieId: data.movieId, list } } },
-          { new: true }
-        )
-      : await User.findByIdAndUpdate(
-          dbUser._id,
-          {
-            $push: {
-              favs: {
-                movieId: data.movieId,
-                title: data.title,
-                description: data.description,
-                dateReleased: data.dateReleased,
-                rating: data.rating,
-                image: data.image,
-                list,
-              },
-            },
-          },
-          { new: true }
-        );
 
     return NextResponse.json(updatedUser, { status: 200 });
-  } catch (error) {
-    console.error("Error updating favorites:", error);
-    return NextResponse.json(
-      { error: "Error updating favorites" },
-      { status: 500 }
-    );
+  } catch (err) {
+    console.error('Error updating favorites:', err);
+    return NextResponse.json({ error: 'Error updating favorites' }, { status: 500 });
   }
 }
 
 export async function GET(req: NextRequest) {
-  const user = await currentUser();
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const { user, error } = await requireApiUser();
+  if (!user) return error;
 
   try {
     const dbUser = await getDbUser(user);
-
+    const favs = toFavItems(dbUser.favs);
     const { searchParams } = new URL(req.url);
-    const list = searchParams.get("list");
-    const movieId = searchParams.get("movieId");
+    const list = searchParams.get('list');
+    const movieId = searchParams.get('movieId');
 
-    let favs = dbUser.favs ?? [];
-
-    // Membership lookup for a single movie: which lists is it in?
     if (movieId) {
-      const lists = favs
-        .filter((f: { movieId: string }) => f.movieId === movieId)
-        .map((f: { list: string }) => f.list);
-      return NextResponse.json({ lists }, { status: 200 });
+      return NextResponse.json({ lists: movieLists(favs, movieId) }, { status: 200 });
     }
 
-    if (list && ["favorite", "watchlist", "watched"].includes(list)) {
-      favs = favs.filter((f: { list: string }) => f.list === list);
-    }
-
-    return NextResponse.json({ favs }, { status: 200 });
-  } catch (error) {
-    console.error("Error fetching favorites:", error);
     return NextResponse.json(
-      { error: "Error fetching favorites" },
-      { status: 500 }
+      { favs: isFavList(list) ? filterFavsByList(favs, list) : favs },
+      { status: 200 }
     );
+  } catch (err) {
+    console.error('Error fetching favorites:', err);
+    return NextResponse.json({ error: 'Error fetching favorites' }, { status: 500 });
   }
 }

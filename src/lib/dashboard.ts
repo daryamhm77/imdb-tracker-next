@@ -1,4 +1,4 @@
-import type { UserFavItem, RecentlyViewedItem } from './types';
+import { isFavList, type UserFavItem, type RecentlyViewedItem } from './types';
 
 export interface DashboardStats {
   totalFavorites: number;
@@ -15,7 +15,7 @@ export interface DashboardData {
 }
 
 /** Map mongoose subdocuments to plain serializable objects. */
-export function toFavItems(favs: UserFavItem[] | undefined): UserFavItem[] {
+export function toFavItems(favs: Array<Omit<UserFavItem, 'list'> & { list: string }> | undefined): UserFavItem[] {
   return (favs ?? []).map((f) => ({
     movieId: f.movieId,
     title: f.title,
@@ -23,7 +23,7 @@ export function toFavItems(favs: UserFavItem[] | undefined): UserFavItem[] {
     description: f.description,
     dateReleased: f.dateReleased,
     rating: f.rating,
-    list: f.list,
+    list: isFavList(f.list) ? f.list : 'favorite',
   }));
 }
 
