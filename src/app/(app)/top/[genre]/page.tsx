@@ -2,9 +2,7 @@ import type { Metadata } from 'next';
 import CatalogPage from '@/components/templates/CatalogPage';
 import { getTrending, getTopRated } from '@/lib/api';
 
-export function generateStaticParams() {
-  return [{ genre: 'trending' }, { genre: 'top_rated' }];
-}
+export const dynamic = 'force-dynamic';
 
 interface GenrePageProps {
   params: Promise<{ genre: string }>;

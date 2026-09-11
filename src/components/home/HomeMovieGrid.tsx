@@ -2,9 +2,16 @@ import Link from 'next/link';
 import MovieGrid from '@/components/ui/MovieGrid';
 import Section, { SectionHeader } from '@/components/ui/Section';
 import { getTrending } from '@/lib/api';
+import type { Movie } from '@/lib/types';
 
 export default async function HomeMovieGrid() {
-  const movies = (await getTrending()).slice(0, 10);
+  let movies: Movie[] = [];
+  try {
+    movies = (await getTrending()).slice(0, 10);
+  } catch (error) {
+    console.error('Failed to load trending movies', error);
+  }
+
   if (movies.length === 0) {
     return (
       <Section tone="muted" divided className="py-16">

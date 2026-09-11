@@ -5,14 +5,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { MdMenu, MdClose } from "react-icons/md";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs";
 import ThemeSwitch from "./ThemeSwitch";
+import HeaderAuth, { HeaderAuthMobile } from "./HeaderAuth";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -83,37 +77,7 @@ const Header = () => {
             {mobileOpen ? <MdClose size={24} /> : <MdMenu size={24} />}
           </button>
 
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="hidden rounded-xl border border-red-500/40 px-5 py-2 text-sm font-semibold text-red-400 transition hover:bg-red-600 hover:text-white md:inline-block">
-                Sign In
-              </button>
-            </SignInButton>
-
-            <SignUpButton mode="modal">
-              <button className="hidden rounded-xl bg-red-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-700 md:inline-block">
-                Sign Up
-              </button>
-            </SignUpButton>
-          </SignedOut>
-
-          <SignedIn>
-            <Link
-              href="/favorites"
-              className="hidden text-sm font-semibold text-foreground transition hover:text-red-400 md:inline"
-            >
-              Favorites
-            </Link>
-            <div className="hidden md:block">
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: "h-10 w-10",
-                  },
-                }}
-              />
-            </div>
-          </SignedIn>
+          <HeaderAuth />
         </div>
       </div>
 
@@ -136,41 +100,7 @@ const Header = () => {
               );
             })}
 
-            <SignedIn>
-              <Link
-                href="/favorites"
-                onClick={() => setMobileOpen(false)}
-                className="text-sm font-medium text-foreground transition hover:text-red-400"
-              >
-                Favorites
-              </Link>
-            </SignedIn>
-
-            <div className="flex items-center gap-4 pt-2">
-              <SignedOut>
-                <SignInButton mode="modal">
-                  <button className="rounded-xl border border-red-500/40 px-5 py-2 text-sm font-semibold text-red-400 transition hover:bg-red-600 hover:text-white">
-                    Sign In
-                  </button>
-                </SignInButton>
-
-                <SignUpButton mode="modal">
-                  <button className="rounded-xl bg-red-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-700">
-                    Sign Up
-                  </button>
-                </SignUpButton>
-              </SignedOut>
-
-              <SignedIn>
-                <UserButton
-                  appearance={{
-                    elements: {
-                      avatarBox: "h-10 w-10",
-                    },
-                  }}
-                />
-              </SignedIn>
-            </div>
+            <HeaderAuthMobile onNavigate={() => setMobileOpen(false)} />
           </nav>
         </div>
       )}

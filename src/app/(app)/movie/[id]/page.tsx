@@ -2,13 +2,8 @@ import type { Metadata } from 'next';
 import MovieDetail from '@/components/movie/MovieDetail';
 import StatusPage from '@/components/templates/StatusPage';
 import { getMovieById } from '@/lib/api';
-import { CURATED_MOVIE_IDS } from '@/lib/constants/movies';
 
-export const revalidate = 3600;
-
-export function generateStaticParams() {
-  return CURATED_MOVIE_IDS.map((id) => ({ id }));
-}
+export const dynamic = 'force-dynamic';
 
 interface MovieDetailPageProps {
   params: Promise<{

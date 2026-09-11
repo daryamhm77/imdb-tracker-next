@@ -3,7 +3,7 @@ import { Movie, MovieDetail, toMovie } from '@/lib/types';
 import { getOmdbApiKey } from '@/lib/env';
 
 const OMDB_REVALIDATE = 3600;
-const ID_CONCURRENCY = 2;
+const ID_CONCURRENCY = 5;
 
 type OmdbSearchResponse = {
   Response?: string;
