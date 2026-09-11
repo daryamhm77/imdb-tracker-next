@@ -24,7 +24,11 @@ export async function dbConnect() {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(uri, { bufferCommands: false });
+    cached.promise = mongoose.connect(uri, {
+      bufferCommands: false,
+      maxPoolSize: 5,
+      serverSelectionTimeoutMS: 8000,
+    });
   }
 
   try {

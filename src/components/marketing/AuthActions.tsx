@@ -1,3 +1,5 @@
+'use client';
+
 import { SignedIn, SignedOut, SignUpButton } from '@clerk/nextjs';
 import Button from '@/components/ui/Button';
 

@@ -5,7 +5,16 @@ import { getTrending } from '@/lib/api';
 
 export default async function HomeMovieGrid() {
   const movies = (await getTrending()).slice(0, 10);
-  if (movies.length === 0) return null;
+  if (movies.length === 0) {
+    return (
+      <Section tone="muted" divided className="py-16">
+        <SectionHeader title="Trending This Week" />
+        <p className="text-center text-muted">
+          Trending titles could not be loaded. Try again in a moment.
+        </p>
+      </Section>
+    );
+  }
 
   return (
     <Section tone="muted" divided className="py-16">

@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import CatalogPage from '@/components/templates/CatalogPage';
 import { getTrending, getTopRated } from '@/lib/api';
 
-export const revalidate = 3600;
-
 export function generateStaticParams() {
   return [{ genre: 'trending' }, { genre: 'top_rated' }];
 }

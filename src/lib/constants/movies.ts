@@ -1,13 +1,13 @@
 export const TRENDING_IDS = [
   'tt15398776', // Oppenheimer
-  'tt1517268', // Dune: Part Two
-  'tt9362722', // Everything Everywhere All at Once
+  'tt15239678', // Dune: Part Two
+  'tt1517268', // Barbie
   'tt1630029', // Avatar: The Way of Water
-  'tt6751668', // The Batman
-  'tt9114286', // Top Gun: Maverick
-  'tt6710474', // Spider-Man: No Way Home
-  'tt10872600', // The Super Mario Bros. Movie
-  'tt5433140', // A Quiet Place
+  'tt1877830', // The Batman
+  'tt1745960', // Top Gun: Maverick
+  'tt10872600', // Spider-Man: No Way Home
+  'tt9362722', // Everything Everywhere All at Once
+  'tt0468569', // The Dark Knight
   'tt4154756', // Avengers: Infinity War
 ] as const;
 
@@ -20,7 +20,7 @@ export const TOP_RATED_IDS = [
   'tt0108052', // Schindler's List
   'tt0167260', // The Lord of the Rings: The Return of the King
   'tt0110912', // Pulp Fiction
-  'tt0080678', // Star Wars: Episode V - The Empire Strikes Back
+  'tt0080684', // Star Wars: Episode V - The Empire Strikes Back
   'tt0060196', // The Good, the Bad and the Ugly
 ] as const;
 
