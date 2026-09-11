@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
-import { getMongoUri } from "@/lib/env";
+import mongoose from 'mongoose';
+import { attachDatabasePool } from '@vercel/functions';
+import { getMongoDbName, getMongoUri } from '@/lib/env';
 
 interface MongooseCache {
   conn: typeof mongoose | null;
@@ -24,11 +25,20 @@ export async function dbConnect() {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(uri, {
-      bufferCommands: false,
-      maxPoolSize: 5,
-      serverSelectionTimeoutMS: 8000,
-    });
+    cached.promise = mongoose
+      .connect(uri, {
+        dbName: getMongoDbName(),
+        bufferCommands: false,
+        maxPoolSize: 1,
+        minPoolSize: 0,
+        maxIdleTimeMS: 10000,
+        serverSelectionTimeoutMS: 8000,
+        family: 4,
+      })
+      .then((connection) => {
+        attachDatabasePool(connection.connection.getClient());
+        return connection;
+      });
   }
 
   try {

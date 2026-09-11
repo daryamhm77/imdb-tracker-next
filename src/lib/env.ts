@@ -21,3 +21,7 @@ export function getMongoUri(): string {
   }
   return mongoUri;
 }
+
+export function getMongoDbName(): string {
+  return process.env.MONGODB_DB || 'imdb-tracker';
+}

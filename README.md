@@ -108,7 +108,7 @@ npm install
 cp .env.example .env.local
 ```
 
-Fill `.env.local` (see below), start Mongo, then run the app:
+Copy `.env.example` to `.env.local`, fill in your keys, start Mongo, then run the app:
 
 ```bash
 docker compose up -d
@@ -125,33 +125,6 @@ Open [http://localhost:4001](http://localhost:4001).
 | `npm run build` | Production build |
 | `npm start` | Serve the production build on port 4001 |
 | `npm run lint` | ESLint |
-
-## Environment variables
-
-Copy `.env.example` to `.env.local`. Never commit `.env.local`.
-
-| Variable | Required | Notes |
-| --- | --- | --- |
-| `MONGODB_URI` | Yes | Local: `mongodb://localhost:27017/imdb-tracker`. On Vercel use MongoDB Atlas. |
-| `OMDB_API_KEY` | Yes | Needed at **build and runtime** (movie pages are prerendered). |
-| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Yes | Clerk Frontend API key |
-| `CLERK_SECRET_KEY` | Yes | Clerk secret key |
-| `NEXT_PUBLIC_CLERK_SIGN_IN_URL` | Yes | `/sign-in` |
-| `NEXT_PUBLIC_CLERK_SIGN_UP_URL` | Yes | `/sign-up` |
-| `NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL` | Yes | `/` |
-| `NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL` | Yes | `/` |
-| `CLERK_WEBHOOK_SIGNING_SECRET` | For sync | Clerk → Webhooks → signing secret |
-
-Clerk webhook endpoint: `https://YOUR_DOMAIN/api/webhooks` (local: your tunnel, production: `https://YOUR_APP.vercel.app/api/webhooks`).
-
-## Deploy on Vercel
-
-1. Import the GitHub repo. Framework: **Next.js**, Node **20**.
-2. Add the env vars above for Production, Preview, and Development.
-3. Set `MONGODB_URI` to an Atlas connection string (allow `0.0.0.0/0` in Atlas Network Access). Localhost will not work on Vercel.
-4. In Clerk → **Domains**, add `https://YOUR_APP.vercel.app`.
-5. In Clerk → **Webhooks**, point to `https://YOUR_APP.vercel.app/api/webhooks`.
-6. Redeploy after saving `NEXT_PUBLIC_*` keys so they are inlined in the client bundle.
 
 ## License
 
